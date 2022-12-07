@@ -3,4 +3,4 @@ project(AoC22)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(AoC22 main.cpp day1.cpp day1.hpp day2.cpp day2.hpp day3.cpp day3.hpp aoc_types.hpp)
+add_executable(AoC22 main.cpp day1.cpp day1.hpp day2.cpp day2.hpp day3.cpp day3.hpp aoc_types.hpp day4.cpp day4.hpp)

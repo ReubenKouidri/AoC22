@@ -70,6 +70,12 @@ build CMakeFiles/AoC22.dir/day3.cpp.o: CXX_COMPILER__AoC22_Debug /Users/juliette
   OBJECT_DIR = CMakeFiles/AoC22.dir
   OBJECT_FILE_DIR = CMakeFiles/AoC22.dir
 
+build CMakeFiles/AoC22.dir/day4.cpp.o: CXX_COMPILER__AoC22_Debug /Users/juliettekouidri/Documents/Reuben/Projects/Cpp/AoC22/day4.cpp || cmake_object_order_depends_target_AoC22
+  DEP_FILE = CMakeFiles/AoC22.dir/day4.cpp.o.d
+  FLAGS = -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -std=gnu++20
+  OBJECT_DIR = CMakeFiles/AoC22.dir
+  OBJECT_FILE_DIR = CMakeFiles/AoC22.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target AoC22
@@ -78,7 +84,7 @@ build CMakeFiles/AoC22.dir/day3.cpp.o: CXX_COMPILER__AoC22_Debug /Users/juliette
 #############################################
 # Link the executable AoC22
 
-build AoC22: CXX_EXECUTABLE_LINKER__AoC22_Debug CMakeFiles/AoC22.dir/main.cpp.o CMakeFiles/AoC22.dir/day1.cpp.o CMakeFiles/AoC22.dir/day2.cpp.o CMakeFiles/AoC22.dir/day3.cpp.o
+build AoC22: CXX_EXECUTABLE_LINKER__AoC22_Debug CMakeFiles/AoC22.dir/main.cpp.o CMakeFiles/AoC22.dir/day1.cpp.o CMakeFiles/AoC22.dir/day2.cpp.o CMakeFiles/AoC22.dir/day3.cpp.o CMakeFiles/AoC22.dir/day4.cpp.o
   FLAGS = -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk
   OBJECT_DIR = CMakeFiles/AoC22.dir
   POST_BUILD = :
