@@ -35,10 +35,10 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk"
+					"fragment" : "-g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15"
 				},
 				{
-					"fragment" : "-std=gnu++20"
+					"fragment" : "-std=gnu++2a"
 				}
 			],
 			"language" : "CXX",
