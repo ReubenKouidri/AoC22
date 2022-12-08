@@ -9,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/AoC22.dir/day3.cpp.o.d"
   "CMakeFiles/AoC22.dir/day4.cpp.o"
   "CMakeFiles/AoC22.dir/day4.cpp.o.d"
+  "CMakeFiles/AoC22.dir/day5.cpp.o"
+  "CMakeFiles/AoC22.dir/day5.cpp.o.d"
   "CMakeFiles/AoC22.dir/main.cpp.o"
   "CMakeFiles/AoC22.dir/main.cpp.o.d"
 )

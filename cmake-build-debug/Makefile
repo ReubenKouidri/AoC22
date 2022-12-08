@@ -225,6 +225,30 @@ day4.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AoC22.dir/build.make CMakeFiles/AoC22.dir/day4.cpp.s
 .PHONY : day4.cpp.s
 
+day5.o: day5.cpp.o
+.PHONY : day5.o
+
+# target to build an object file
+day5.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AoC22.dir/build.make CMakeFiles/AoC22.dir/day5.cpp.o
+.PHONY : day5.cpp.o
+
+day5.i: day5.cpp.i
+.PHONY : day5.i
+
+# target to preprocess a source file
+day5.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AoC22.dir/build.make CMakeFiles/AoC22.dir/day5.cpp.i
+.PHONY : day5.cpp.i
+
+day5.s: day5.cpp.s
+.PHONY : day5.s
+
+# target to generate assembly for a file
+day5.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AoC22.dir/build.make CMakeFiles/AoC22.dir/day5.cpp.s
+.PHONY : day5.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -270,6 +294,9 @@ help:
 	@echo "... day4.o"
 	@echo "... day4.i"
 	@echo "... day4.s"
+	@echo "... day5.o"
+	@echo "... day5.i"
+	@echo "... day5.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

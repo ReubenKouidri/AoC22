@@ -107,6 +107,12 @@
 		<Unit filename="/Users/reubenkouidri/Documents/Post-Uni/Cpp/Projects/Aoc22/day4.hpp">
 			<Option target="AoC22"/>
 		</Unit>
+		<Unit filename="/Users/reubenkouidri/Documents/Post-Uni/Cpp/Projects/Aoc22/day5.cpp">
+			<Option target="AoC22"/>
+		</Unit>
+		<Unit filename="/Users/reubenkouidri/Documents/Post-Uni/Cpp/Projects/Aoc22/day5.hpp">
+			<Option target="AoC22"/>
+		</Unit>
 		<Unit filename="/Users/reubenkouidri/Documents/Post-Uni/Cpp/Projects/Aoc22/main.cpp">
 			<Option target="AoC22"/>
 		</Unit>
