@@ -14,7 +14,8 @@ int main()
 {
     std::ifstream stream {"/Users/juliettekouidri/Documents/Reuben/Projects/Cpp/AoC22/day6/day6_data.txt"};
     std::string s {};
-    constexpr int filterLength { 4 };
+    constexpr int filterLength { 4 };  // part 1
+    //constexpr int filterLength { 14 };  // part 2
 
 
     while (std::getline(stream, s)){
