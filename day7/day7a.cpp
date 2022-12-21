@@ -2,74 +2,55 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
-#include <algorithm>
+#include "Directory.hpp"  // includes vector and File.hpp
 
 
-struct File {
-    std::string name {};
-    std::size_t size {};
-};
-
-struct Directory {
-    std::string name {};
-    std::vector<std::unique_ptr<Directory>> dirs;
-    std::vector<std::unique_ptr<File>> files;
-    Directory* parent;
-    std::size_t size {};
-};
-
-
-void traverse(Directory* mainDir, int level) {
-    for (int i = 0; i < level; i++)
-        std::cout << " ";
-    std::cout << "- " << mainDir->name << "(dir)\n";
-    for (const auto& dir : mainDir->dirs)
-        traverse(dir.get(), level + 1);
-    for (const auto& file : mainDir->files){
-        for (int j = 0; j < level; j++)
-            std::cout << " ";
+void traverse(Directory* dir, int depth) {  // depth is used for illustration purposes only
+    for (int i = 0; i < depth; i++)
+        std::cout << "  ";
+    std::cout << "- " << dir->name << "(dir)\n";
+    for (const auto& d : dir->dirs)
+        traverse(d.get(), depth + 1);
+    for (const auto& file : dir->files) {
+        for (int j = 0; j < depth; j++)
+            std::cout << "  ";
         std::cout << "- " << file->name << "(file, size=" << file->size << ")\n";
     }
 }
 
-size_t updateSize(Directory* topDir) {
-    for (const auto &dir: topDir->dirs)
-        topDir->size += updateSize(dir.get());
-    for (const auto& file : topDir->files)
-        topDir->size += file->size;
+size_t calcSizes(Directory* dir) {
+    for (const auto &d: dir->dirs)
+        dir->size += calcSizes(d.get());
+    for (const auto& file : dir->files)
+        dir->size += file->size;
 
-    return topDir->size;
+    return dir->size;
 }
 
-size_t totalSizeLteThreshold(Directory* cd, size_t threshold) {
+size_t totalSizeLteThreshold(Directory* dir, size_t threshold) {
     size_t sum = 0;
-    for (const auto& dir : cd -> dirs) {
-        if (dir->size <= threshold) {
-            sum += dir->size;
+    for (const auto& d : dir -> dirs) {
+        if (d->size <= threshold) {
+            sum += d->size;
         }
-        const auto insideThatDir = totalSizeLteThreshold(dir.get(), threshold);
+        const auto insideThatDir = totalSizeLteThreshold(d.get(), threshold);
         sum += insideThatDir;
     }
 
     return sum;
 }
 
-int main(int argc, char* argv[]) {
+
+int main() {
     std::string fileName = "/Users/juliettekouidri/Documents/Reuben/Projects/Cpp/AoC22/day7/day7_data.txt";
-    if (argc > 1) {
-        fileName = argv[1];
-    }
 
     std::string line {};
     std::fstream file(fileName);
 
-    auto topDir { std::make_unique<Directory>() };
-    topDir->name = '/';
-    topDir->parent = topDir.get();  // returns the 'stored pointer' pointing to the object managed by unique_ptr
-    auto cd { topDir.get() };
-    bool skip { false };
-    constexpr std::size_t EOC = 5;  // end of cmd
+    auto outerMostDir = std::make_unique<Directory>("/");
+    auto cd = outerMostDir.get();
+    bool skip = false;
+    constexpr size_t EOC = 5;  // end of cmd
 
     while(skip || std::getline(file, line)) {
         skip = false;
@@ -80,8 +61,8 @@ int main(int argc, char* argv[]) {
             if (cmd == "cd") {
                 const auto dest = line.substr(EOC, std::string::npos);
                 if (dest == "..") cd = cd->parent;
-                else if (dest == "/") cd = topDir.get();
-                else {
+                else if (dest == "/") cd = outerMostDir.get();
+                else {  // change directory
                     bool found = false;
                     for (const auto& dir : cd->dirs) {
                         if (dir->name == dest) {
@@ -93,9 +74,8 @@ int main(int argc, char* argv[]) {
                     }
                     if (!found) {
                         std::cout << "Adding dir: " << dest << '\n';
-                        cd -> dirs.emplace_back();
-                        cd -> dirs.back() -> name = dest;
-                        cd->dirs.back()->parent = cd;
+                        Directory newDir = Directory(cd, dest);
+                        cd -> dirs.emplace_back(std::make_unique<Directory>(cd, dest));
                         cd = cd->dirs.back().get();
                         std::cout << "Now, cd = " << cd->name << '\n';
                     }
@@ -105,40 +85,31 @@ int main(int argc, char* argv[]) {
                 while (std::getline(file, line)) {
                     if (line.substr(0, 3) == "dir") {  // [x1, x2)
                         const auto dirName = line.substr(4, std::string::npos);
-                        // TODO: change 'found' to 'alreadyExists' or something more descriptive
-                        bool found = false;
+                        bool exists = false;  // assume does not exist
                         for (const auto& dir : cd -> dirs) {
-                            if (dir->name == "dirName")
-                                found = true;
+                            if (dir->name == "dirName") exists = true;  // and do nothing
                         }
-                        if (!found) {
-                            std::cout << "Adding new dir: " << dirName << '\n';
-                            cd->dirs.emplace_back(std::make_unique<Directory>());
-                            cd->dirs.back()->parent = cd;
-                            cd->dirs.back()->name = dirName;
-                        }
+                        if (!exists)
+                            cd->dirs.emplace_back(std::make_unique<Directory>(cd, dirName));
                     }
                     else if (line[0] != '$') {  // add files
                         const auto sepPos = line.find(' ');
                         const auto fileSize = std::stoul(line.substr(0, sepPos));
                         const auto name = line.substr(sepPos + 1, std::string::npos);
                         std::cout << "Adding file: " << name << " with size " << fileSize << '\n';
-                        cd->files.emplace_back(std::make_unique<File>());
-                        cd->files.back()->size = fileSize;
-                        cd->files.back()->name = name;
+                        cd->files.emplace_back(std::make_unique<File>(name, fileSize));
                     }
                     else {
-                        std::cout << "else clause\n";
                         skip = true;
-                        break;  // end while
+                        break;
                     }
                 }
             }
         }
     }
-    traverse(topDir.get(), 0);
-    updateSize(topDir.get());
+    traverse(outerMostDir.get(), 0);
+    calcSizes(outerMostDir.get());
     constexpr size_t sizeThreshold { 100000 };
-    std::cout << totalSizeLteThreshold(topDir.get(), sizeThreshold) << '\n';
+    std::cout << totalSizeLteThreshold(outerMostDir.get(), sizeThreshold) << '\n';
     return 0;
 };
