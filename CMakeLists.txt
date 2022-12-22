@@ -13,5 +13,6 @@ add_executable(
         #day6/day6.cpp
         #day7/day7a.cpp day7/day7b.cpp
         #day8/day8a.cpp day8/day8b.cpp
-        day9/day9a.cpp
+        #day9/day9a.cpp
+        day9/day9b.cpp
 )
