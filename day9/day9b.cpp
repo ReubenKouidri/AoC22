@@ -20,7 +20,7 @@ struct Grid {
     std::vector<Pair_t> pairs {};
     std::vector<Pair_t> visitedLocs {};
 
-    Grid(const size_t rows, const size_t cols, const Pair_t& initPos) {
+    explicit Grid(const size_t rows, const size_t cols, const Pair_t& initPos) {
         for (size_t i = 0; i < rows; i++) {
             std::vector<int> row {};
             for (size_t j = 0; j < cols; j++) {
@@ -146,10 +146,6 @@ struct Grid {
                     for (int j = 0; j < pairs.size() - 1; j++) {  // for every knot
                         if (!adjacent(pairs[j], pairs[j+1])) {  // check adjacent
                             movePair(j+1);
-                            //pairs[j+1].second++;  // not adjacent at least due to col (since that's what we updated)
-                            //if (pairs[j].first > pairs[j+1].first) pairs[j+1].first++; // diagonally down
-                            //if (pairs[j].first < pairs[j+1].first) pairs[j+1].first--;  // diagonally up
-                            //visitedLocs.emplace_back(pairs.back());
                             grid[pairs.back().first][pairs.back().second] = 1;
                         }
                         else break;
@@ -161,11 +157,6 @@ struct Grid {
                     pairs.front().second--;
                     for (int j = 0; j < pairs.size() - 1; j++) {
                         if (!adjacent(pairs[j], pairs[j+1])) {
-                            //secondFollowFirst(pairs[j], pairs[j+1]);
-                            //pairs[j+1].second--;  //TODO: BUG HERE!!
-                            //if (pairs[j].first > pairs[j+1].first) pairs[j+1].first++;
-                            //if (pairs[j].first < pairs[j+1].first) pairs[j+1].first--;
-                            //visitedLocs.emplace_back(pairs.back());
                             movePair(j+1);
                             grid[pairs.back().first][pairs.back().second] = 1;
                         }
@@ -178,10 +169,6 @@ struct Grid {
                     pairs.front().first--;
                     for (int j = 0; j < pairs.size() - 1; j++) {
                         if (!adjacent(pairs[j], pairs[j+1])) {
-                            //pairs[j+1].first--;
-                            //if (pairs[j].second > pairs[j+1].second) pairs[j+1].second++;
-                            //if (pairs[j].second < pairs[j+1].second) pairs[j+1].second--;
-                            //visitedLocs.emplace_back(pairs.back());
                             movePair(j+1);
                             grid[pairs.back().first][pairs.back().second] = 1;
                         }
@@ -193,10 +180,6 @@ struct Grid {
                     pairs.front().first++;
                     for (int j = 0; j < pairs.size() - 1; j++) {
                         if (!adjacent(pairs[j], pairs[j+1])) {
-                            //pairs[j+1].first++;
-                            //if (pairs[j].second > pairs[j+1].second) pairs[j+1].second++;
-                            //if (pairs[j].second < pairs[j+1].second) pairs[j+1].second--;
-                            //visitedLocs.emplace_back(pairs.back());
                             movePair(j+1);
                             grid[pairs.back().first][pairs.back().second] = 1;
                         }
