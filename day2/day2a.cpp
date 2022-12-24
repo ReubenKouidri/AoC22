@@ -1,0 +1,42 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <map>
+
+
+[[maybe_unused]] void print_map(const std::map<std::string, int>& m){
+    for (const auto& [key, value] : m)
+        std::cout << '[' << key << "] = " << value << "; ";
+    std::cout << '\n';
+}
+
+
+[[maybe_unused]] std::map<std::string, int> scoreMatrix {{"AX", 4}, {"AY", 8}, {"AZ", 3},
+                                                         {"BX", 1}, {"BY", 5}, {"BZ", 9},
+                                                         {"CX", 7}, {"CY", 2}, {"CZ", 6}};
+
+
+[[nodiscard]] int calcScore(const char c1, const char c2){
+    auto c3 = std::string(1,c1) + c2;  // creates a string "c1c2" e.g. "AY" from 'A' 'Y'
+    return scoreMatrix[c3];
+}
+
+int main() {
+    std::ifstream file {"/Users/juliettekouidri/Documents/Reuben/Projects/Cpp/AoC22/day2/day2_data.txt"};
+
+    std::string line {};
+    int score {};
+    char char1 {};
+    char char2 {};
+
+    while (std::getline(file, line) && !file.fail()) {
+        std::stringstream ss;
+        ss << line;  // e.g. "A X"
+        ss >> char1 >> char2;  // e.g. char1 = 'A', char2 = 'X'
+        score += calcScore(char1, char2);
+    }
+
+    std::cout << "Total score: " << score << '\n';
+    return 0;
+}

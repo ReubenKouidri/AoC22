@@ -23,7 +23,7 @@ int main() {
     std::vector<size_t> elves {};
     std::string line {};
 
-    while (std::getline(file, line) && file.good()) {
+    while (std::getline(file, line) && !file.fail()) {
         if (line.empty()) {
             elves.emplace_back(sum);
             sum = 0;
