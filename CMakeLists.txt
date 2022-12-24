@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(
         AoC22
-        #day1/day1.cpp day1/day1.hpp
+        day1/day1.cpp
         #day2/day2.cpp day2/day2.hpp
         #day3/day3.cpp day3/day3.hpp
         #day4/day4.cpp day4/day4.hpp
@@ -14,5 +14,5 @@ add_executable(
         #day7/day7a.cpp day7/day7b.cpp
         #day8/day8a.cpp day8/day8b.cpp
         #day9/day9a.cpp
-        day9/day9b.cpp
+        #day9/day9b.cpp
 )
