@@ -4,6 +4,7 @@
 #include <sstream>
 #include <map>
 
+
 [[maybe_unused]] void print_map(const std::map<std::string, size_t>& m){
     for (const auto& [key, value] : m)
         std::cout << '[' << key << "] = " << value << "; ";
@@ -11,15 +12,14 @@
 }
 
 std::map<std::string, size_t> scoreMatrix{{"AX", 0+3}, {"AY", 3+1}, {"AZ", 6+2},
-                                       {"BX", 0+1}, {"BY", 3+2}, {"BZ", 6+3},
-                                       {"CX", 0+2}, {"CY", 3+3}, {"CZ", 6+1}};
+                                          {"BX", 0+1}, {"BY", 3+2}, {"BZ", 6+3},
+                                          {"CX", 0+2}, {"CY", 3+3}, {"CZ", 6+1}};
 
 
 [[nodiscard]] size_t calcScore(const char c1, const char c2){
     auto c3 = std::string(1,c1) + c2;  // creates a string "c1c2" e.g. "AY" from 'A' 'Y'
     return scoreMatrix[c3];
 }
-
 
 
 int main() {
