@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <iostream>
-#include "day3.hpp"
 
 
 [[nodiscard]] [[nodiscard]] int convertCharToRange(unsigned char c) // converts to [1, 52]
