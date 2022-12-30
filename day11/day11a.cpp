@@ -5,56 +5,71 @@
 #include <sstream>
 #include <string>
 #include <memory>
+#include <cmath>
 
 
 class Monkey {
-    int id {};
-    int magnitude {};
-    int itemsInspected {};
+    size_t magnitude {};
+    size_t itemsInspected {};
     char operation {};
-    int trueMonkey {};  // monkey that item gets thrown to if true
-    int falseMonkey {};  // monkey that item gets thrown to if false
-    std::vector<int> items {};
+    size_t trueMonkey {};  // monkey that item gets thrown to if true
+    size_t falseMonkey {};  // monkey that item gets thrown to if false
+    size_t divisibleBy {};
+    std::vector<size_t> items {};
 public:
-    explicit Monkey(std::vector<int>  vec) : items {std::move( vec )}
+    explicit Monkey(std::vector<size_t>  vec) : items {std::move( vec )}
     {}
-    explicit Monkey(const int num) : id {num}
-    {}
-    void test(const int worryLevel) {
-        // e.g. divisible by 23? true : false
-    }
-    void initItems(const std::vector<int>& newItems) { items = newItems; }
+    Monkey() = default;
+    void initItems(const std::vector<size_t>& newItems) { items = newItems; }
 
     void throwItem(Monkey* other) {
-        if (!items.empty()) {
-            other->items.emplace_back(items[0]);
-            items.erase(items.begin());
-        }
-        else {
-            std::cout << "Monkey " << id << " is not holding any items!\n";
-        }
+        other->items.emplace_back(items[0]);  // throw first item in list
+        items.erase(items.begin());  // remove it
     }
-    [[nodiscard]] int inspectItem(const int num, const int worryLevel) const {
-        int result {};
+    void inspectItems() {
+        for (auto& item : items)
+            inspectItem(item);
+    }
+    void inspectItem(size_t& item) {
+        itemsInspected++;
         switch (operation) {
             case '+':
-                result = num + worryLevel;
+                item = std::floor((item + magnitude) / 3);
                 break;
             case '*':
-                result = num * worryLevel;
+                item = std::floor((item * magnitude) / 3);
+                break;
+            case 's':
+                item = std::floor(std::pow(item, 2) / 3);
                 break;
             default:
                 std::cout << "BUG IN OPERATION";
                 break;
         }
-        return result;
     }
-    void setTrueTarget(const int otherId) { trueMonkey = otherId; }
-    void setFalseTarget(const int otherId) { falseMonkey = otherId; }
+    void makeTurn(std::vector<std::unique_ptr<Monkey>>& monkeys) {
+        if (!items.empty()) {
+            inspectItems();
+            for (const auto item : items) {
+                item % divisibleBy == 0 ?
+                throwItem(monkeys[trueMonkey].get()) : throwItem(monkeys[falseMonkey].get());
+            }
+        }
+    }
+    [[nodiscard]] size_t getNumInspected() const { return itemsInspected; }
+    void setTrueTarget(const size_t otherId) { trueMonkey = otherId; }
+    void setFalseTarget(const size_t otherId) { falseMonkey = otherId; }
     void setOp(const char c) { operation = c; }
-    void setMag(const int i) { magnitude = i; }
+    void setMag(const size_t i) { magnitude = i; }
+    void setDivisibleBy(const size_t d) { divisibleBy = d; }
+    void printItems() const {
+        std::cout << " Items: ";
+        for (const auto i : items) {
+            std::cout << i << " ";
+        }
+        std::cout << '\n';
+    }
 };
-
 
 auto setup() {
     std::ifstream file {"/Users/juliettekouidri/Documents/Reuben/Projects/Cpp/AoC22/day11/day11_test.txt"};
@@ -63,11 +78,11 @@ auto setup() {
 
     while (std::getline(file, line)){
         if (line.substr(0,line.find(' ')) == "Monkey"){
-            auto monkey {std::make_unique<Monkey> (std::stoi(line.substr(line.find(' ') + 1, 1)))};
+            auto monkey {std::make_unique<Monkey>()};
             monkeys.emplace_back(std::move(monkey));
         }
         else if (line.substr(2, 8) == "Starting") {
-            std::vector<int> items;
+            std::vector<size_t> items;
             std::stringstream ss;
             const auto subs = line.substr(line.find(": ") + 2);
 
@@ -88,7 +103,7 @@ auto setup() {
 
             if (substring.find("old") != std::string::npos) {  // if "old" found => old * old
                 monkeys.back()->setOp('s');
-                break;
+                continue;
             }
 
             char op{substring[0]};
@@ -105,6 +120,8 @@ auto setup() {
         }
         else if (line.substr(2, 4) == "Test") {
             int lineNum = 0;
+            int divisBy = std::stoi(line.substr(line.find('y') + 2));
+            monkeys.back()->setDivisibleBy(divisBy);
             while (std::getline(file, line) && lineNum < 2) {
                 const auto subs = line.substr(line.find('y') + 2);
                 int dest = std::stoi(subs);
@@ -125,15 +142,69 @@ auto setup() {
 
 int main() {
     auto monkeys = setup();
-    /* for 20 rounds do:
-     *   m inspects item
-     *   new = operation // 3, e.g. new = (old * old) // 3 (FLOOR)
-     *   if test true: throw item to m2, else throw item to m3
-     *   m inspects next item...
-     *
-     *   repeat
-     *
-    */
+    constexpr int rounds = 20;
+
+    for (int round = 0; round < rounds; round++) {
+        std::cout << "Start of round " << round << '\n';
+        for (auto& monkey : monkeys) {
+            monkey->makeTurn(monkeys);
+        }
+        for (auto& monkey : monkeys) {
+            monkey->printItems();
+        }
+    }
+
+    std::vector<size_t> inspectedList;
+    for (const auto& monkey : monkeys) {
+        inspectedList.emplace_back(monkey->getNumInspected());
+    }
+    std::sort(inspectedList.begin(), inspectedList.end(), std::greater<>());
+    for (const auto i : inspectedList) {
+        std::cout << i << " \n";
+    }
+    std::cout << inspectedList[0] * inspectedList[1] << '\n';
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
