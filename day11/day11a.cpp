@@ -22,17 +22,13 @@ public:
     Monkey() = default;
     void initItems(const std::vector<size_t>& newItems) { items = newItems; }
 
-    void throwItem(Monkey* other) {
-        other->items.emplace_back(items[0]);  // throw first item in list
-        items.erase(items.begin());  // remove it
-    }
     void inspectItems() {
         for (auto& item : items)
             inspectItem(item);
     }
     void inspectItem(size_t& item) {
         itemsInspected++;
-        switch (operation) {
+        switch(operation) {
             case '+':
                 item = std::floor((item + magnitude) / 3);
                 break;
@@ -50,10 +46,15 @@ public:
     void makeTurn(std::vector<std::unique_ptr<Monkey>>& monkeys) {
         if (!items.empty()) {
             inspectItems();
-            for (const auto item : items) {
-                item % divisibleBy == 0 ?
-                throwItem(monkeys[trueMonkey].get()) : throwItem(monkeys[falseMonkey].get());
+            std::vector<size_t> trueVec;
+            std::vector<size_t> falseVec;
+            for (const auto item: items) {
+                (item % divisibleBy == 0 && item >= divisibleBy) ?
+                trueVec.emplace_back(item) : falseVec.emplace_back(item);
             }
+            monkeys[trueMonkey]->items.insert(monkeys[trueMonkey]->items.end(), trueVec.begin(), trueVec.end());
+            monkeys[falseMonkey]->items.insert(monkeys[falseMonkey]->items.end(), falseVec.begin(), falseVec.end());
+            items.erase(items.begin(), items.end());
         }
     }
     [[nodiscard]] size_t getNumInspected() const { return itemsInspected; }
@@ -71,8 +72,9 @@ public:
     }
 };
 
-auto setup() {
-    std::ifstream file {"/Users/juliettekouidri/Documents/Reuben/Projects/Cpp/AoC22/day11/day11_test.txt"};
+
+auto setup(std::string_view filename) {
+    std::ifstream file { filename };
     std::string line {};
     std::vector<std::unique_ptr<Monkey>> monkeys;
 
@@ -141,7 +143,8 @@ auto setup() {
 }
 
 int main() {
-    auto monkeys = setup();
+    std::string filename {"/Users/juliettekouidri/Documents/Reuben/Projects/Cpp/AoC22/day11/day11_data.txt" };
+    auto monkeys = setup(filename);
     constexpr int rounds = 20;
 
     for (int round = 0; round < rounds; round++) {
