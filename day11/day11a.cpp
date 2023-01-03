@@ -1,14 +1,86 @@
-#include "MonkeyA.hpp"
+#include <iostream>
+#include <utility>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <memory>
+#include <cmath>
+
+
+class Monkey {
+    size_t magnitude {};
+    size_t itemsInspected {};
+    char operation {};
+    size_t trueMonkey {};  // monkey that item gets thrown to if true
+    size_t falseMonkey {};  // monkey that item gets thrown to if false
+    size_t divisibleBy {};
+    std::vector<size_t> items {};
+public:
+    explicit Monkey(std::vector<size_t>  vec) : items {std::move( vec )}
+    {}
+    Monkey() = default;
+    void initItems(const std::vector<size_t>& newItems) { items = newItems; }
+
+    void inspectItems() {
+        for (auto& item : items)
+            inspectItem(item);
+    }
+    void inspectItem(size_t& item) {
+        itemsInspected++;
+        switch(operation) {
+            case '+':
+                item = std::floor((item + magnitude) / 3);
+                break;
+            case '*':
+                item = std::floor((item * magnitude) / 3);
+                break;
+            case 's':
+                item = std::floor(std::pow(item, 2) / 3);
+                break;
+            default:
+                std::cout << "BUG IN OPERATION";
+                break;
+        }
+    }
+    void makeTurn(std::vector<std::unique_ptr<Monkey>>& monkeys) {
+        if (!items.empty()) {
+            inspectItems();
+            std::vector<size_t> trueVec;
+            std::vector<size_t> falseVec;
+            for (const auto item: items) {
+                (item % divisibleBy == 0 && item >= divisibleBy) ?
+                trueVec.emplace_back(item) : falseVec.emplace_back(item);
+            }
+            monkeys[trueMonkey]->items.insert(monkeys[trueMonkey]->items.end(), trueVec.begin(), trueVec.end());
+            monkeys[falseMonkey]->items.insert(monkeys[falseMonkey]->items.end(), falseVec.begin(), falseVec.end());
+            items.erase(items.begin(), items.end());
+        }
+    }
+    [[nodiscard]] size_t getNumInspected() const { return itemsInspected; }
+    void setTrueTarget(const size_t otherId) { trueMonkey = otherId; }
+    void setFalseTarget(const size_t otherId) { falseMonkey = otherId; }
+    void setOp(const char c) { operation = c; }
+    void setMag(const size_t i) { magnitude = i; }
+    void setDivisibleBy(const size_t d) { divisibleBy = d; }
+    void printItems() const {
+        std::cout << " Items: ";
+        for (const auto i : items) {
+            std::cout << i << " ";
+        }
+        std::cout << '\n';
+    }
+};
 
 
 auto setup(std::string_view filename) {
     std::ifstream file { filename };
     std::string line {};
-    std::vector<std::unique_ptr<MonkeyA>> monkeys;
+    std::vector<std::unique_ptr<Monkey>> monkeys;
 
     while (std::getline(file, line)){
         if (line.substr(0,line.find(' ')) == "Monkey"){
-            auto monkey {std::make_unique<MonkeyA>()};
+            auto monkey {std::make_unique<Monkey>()};
             monkeys.emplace_back(std::move(monkey));
         }
         else if (line.substr(2, 8) == "Starting") {
@@ -70,9 +142,8 @@ auto setup(std::string_view filename) {
     return monkeys;
 }
 
-
 int main() {
-    std::string filename {"/Users/juliettekouidri/Documents/Reuben/Projects/Cpp/AoC22/day11/day11_test.txt" };
+    std::string filename {"/Users/juliettekouidri/Documents/Reuben/Projects/Cpp/AoC22/day11/day11_data.txt" };
     auto monkeys = setup(filename);
     constexpr int rounds = 20;
 
@@ -98,3 +169,45 @@ int main() {
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
