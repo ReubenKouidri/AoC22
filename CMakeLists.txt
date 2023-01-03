@@ -17,5 +17,8 @@ add_executable(
         #day9/day9b.cpp
         #day10/day10a.cpp
         #day10/day10b.cpp
-        day11/day11a.cpp
+        #day11/day11a.cpp
+        #day11/MonkeyA.hpp day11/MonkeyA.cpp
+        day11/MonkeyB.hpp day11/MonkeyB.cpp
+        day11/day11b.cpp
 )

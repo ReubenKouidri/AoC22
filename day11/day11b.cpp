@@ -1,18 +1,18 @@
-#include "MonkeyA.hpp"
+#include "MonkeyB.hpp"
 
 
 auto setup(std::string_view filename) {
     std::ifstream file { filename };
     std::string line {};
-    std::vector<std::unique_ptr<MonkeyA>> monkeys;
+    std::vector<std::unique_ptr<MonkeyB>> monkeys;
 
     while (std::getline(file, line)){
-        if (line.substr(0,line.find(' ')) == "Monkey"){
-            auto monkey {std::make_unique<MonkeyA>()};
+        if (line.substr(0,line.find(' ')) == "MonkeyB"){
+            auto monkey {std::make_unique<MonkeyB>()};
             monkeys.emplace_back(std::move(monkey));
         }
         else if (line.substr(2, 8) == "Starting") {
-            std::vector<size_t> items;
+            std::vector<long long> items;
             std::stringstream ss;
             const auto subs = line.substr(line.find(": ") + 2);
 
@@ -86,7 +86,7 @@ int main() {
         }
     }
 
-    std::vector<size_t> inspectedList;
+    std::vector<long long> inspectedList;
     for (const auto& monkey : monkeys) {
         inspectedList.emplace_back(monkey->getNumInspected());
     }
